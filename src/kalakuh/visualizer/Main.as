@@ -81,8 +81,13 @@ package kalakuh.visualizer
 			sound.loadCompressedDataFromByteArray(arr, arr.length);
 			if (channel != null) channel.stop();
 			channel = sound.play();
+			channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			
 			addEventListener(Event.ENTER_FRAME, update);
+		}
+		
+		private function onSoundComplete (e : Event) : void {
+			addChild(button);
 		}
 		
 		private function update (e : Event) : void {
