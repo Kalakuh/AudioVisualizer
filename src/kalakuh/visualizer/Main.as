@@ -9,6 +9,7 @@ package kalakuh.visualizer
 	import flash.net.FileReference;
 	import flash.net.FileFilter;
 	import flash.utils.ByteArray;
+	import flash.display.StageDisplayState;
 	
 	/**
 	 * ...
@@ -30,6 +31,8 @@ package kalakuh.visualizer
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
+			
+			stage.displayState = StageDisplayState.FULL_SCREEN;
 			
 			button = new Sprite();
 			button.x = 20;
