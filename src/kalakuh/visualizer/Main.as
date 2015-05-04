@@ -10,6 +10,8 @@ package kalakuh.visualizer
 	import flash.net.FileFilter;
 	import flash.utils.ByteArray;
 	import flash.display.StageDisplayState;
+	import flash.display.Bitmap;
+	import flash.filters.*;
 	
 	/**
 	 * ...
@@ -20,6 +22,8 @@ package kalakuh.visualizer
 		private var reference : FileReference;
 		private var button : Sprite;
 		private var channel : SoundChannel;
+		[Embed(source = "load.png")]private var img : Class;
+		private var array : Array;
 		
 		public function Main() 
 		{
@@ -31,20 +35,30 @@ package kalakuh.visualizer
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
-			
-			stage.displayState = StageDisplayState.FULL_SCREEN;
+			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			
 			button = new Sprite();
-			button.x = 20;
-			button.y = 20;
-			button.graphics.beginFill(0xFF0000);
-			button.graphics.drawCircle(0, 0, 15);
-			button.graphics.endFill();
+			button.x = stage.stageWidth / 2 - 2;
+			button.y = stage.stageHeight / 2 - 1;
 			addChild(button);
+			
+			var bmp : Bitmap = new img();
+			button.addChild(bmp);
+			bmp.x -= bmp.width / 2;
+			bmp.y -= bmp.width / 2;
+			
+			filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
+			
 			button.addEventListener(MouseEvent.CLICK, onClick);
 		}
 		
 		private function onClick (e : Event) : void {
+			removeEventListener(Event.ENTER_FRAME, update);
+			array = new Array();
+			for (var i : uint = 0; i < 512; i++) {
+				array.push(0);
+			}
+			
 			reference = new FileReference();
 			reference.addEventListener(Event.SELECT, onSelect);
 			reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
@@ -56,6 +70,8 @@ package kalakuh.visualizer
 		}
 		
 		private function onComplete (e : Event) : void {
+			removeChild(button);
+			
 			reference.removeEventListener(Event.COMPLETE, onComplete);
 			reference.removeEventListener(Event.SELECT, onSelect);
 			
@@ -63,6 +79,7 @@ package kalakuh.visualizer
 			var arr : ByteArray = ref["data"];
 			var sound : Sound = new Sound();
 			sound.loadCompressedDataFromByteArray(arr, arr.length);
+			if (channel != null) channel.stop();
 			channel = sound.play();
 			
 			addEventListener(Event.ENTER_FRAME, update);
@@ -72,15 +89,16 @@ package kalakuh.visualizer
 			var bytes : ByteArray = new ByteArray();
 			SoundMixer.computeSpectrum(bytes);
 			graphics.clear();
-			graphics.lineStyle(5, 0x44AAFF);
 			
 			for (var x : uint = 0; x < 512; x += 1) {
+				graphics.lineStyle(2, x % 2 == 0 ? 0xFFFF99 : 0xFFCC66);
 				var val : Number = bytes.readFloat();
+				array[x] *= 0.95;
+				array[x] += Math.abs(val);
 				
-				graphics.moveTo(x, stage.stageHeight / 2);
-				graphics.lineTo(x, stage.stageHeight / 2 + (val * 200));
+				graphics.moveTo(stage.stageWidth / 2 + Math.sin((360 * x / 512.0) * Math.PI / 180) * 64, stage.stageHeight / 2 + Math.cos((360 * x / 512.0) * Math.PI / 180) * 64);
+				graphics.lineTo(stage.stageWidth / 2 + Math.sin((360 * x / 512.0) * Math.PI / 180) * (64 + array[x] * 20), stage.stageHeight / 2 + Math.cos((360 * x / 512.0) * Math.PI / 180) * (64 + array[x] * 20));
 			}
 		}
 	}
-	
 }

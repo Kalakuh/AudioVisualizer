@@ -38,7 +38,16 @@
     <body>
         <center>
             <h1>Audio Visualizer</h1>
-			<embed allowFullScreen="true"><iframe onload="focus()" id="swf" width="600" height="400" src="AudioVisualizer.swf" frameborder="0" margin="10px"></iframe></embed>
+			<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+			 codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,18,0"
+			 width="512"  height="400" id="fullscreen" align="middle">
+			<param name="allowFullScreen" value="true" />
+			<param name="movie" value="AudioVisualizer.swf" />
+			<param name="bgcolor" value="#333333" />
+			<embed src="AudioVisualizer.swf" allowFullScreen="true" bgcolor="#333333" width="512" height="400"
+			 name="AudioVisualizer" align="middle" type="application/x-shockwave-flash" 
+			 pluginspage="http://www.macromedia.com/go/getflashplayer" />
+			</object>
             <h3 id="footer">Copyright &copy; - 2015 Juha Harviainen ("Kalakuh");</h3>
         </center>
     </body>
