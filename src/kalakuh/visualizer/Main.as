@@ -96,7 +96,7 @@ package kalakuh.visualizer
 			graphics.clear();
 			
 			for (var x : uint = 0; x < 512; x += 1) {
-				graphics.lineStyle(2, x % 2 == 0 ? 0xFFFF99 : 0xFFCC66);
+				graphics.lineStyle(2, 0xFFFF99);// : 0xFFCC66);
 				var val : Number = bytes.readFloat();
 				array[x] *= 0.95;
 				array[x] += Math.abs(val);
