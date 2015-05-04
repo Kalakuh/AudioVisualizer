@@ -2,6 +2,8 @@ package kalakuh.visualizer
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.media.SoundChannel;
 	import flash.media.SoundMixer;
 	import flash.media.Sound;
 	import flash.net.FileReference;
@@ -15,6 +17,8 @@ package kalakuh.visualizer
 	public class Main extends Sprite 
 	{
 		private var reference : FileReference;
+		private var button : Sprite;
+		private var channel : SoundChannel;
 		
 		public function Main() 
 		{
@@ -27,6 +31,17 @@ package kalakuh.visualizer
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
+			button = new Sprite();
+			button.x = 20;
+			button.y = 20;
+			button.graphics.beginFill(0xFF0000);
+			button.graphics.drawCircle(0, 0, 15);
+			button.graphics.endFill();
+			addChild(button);
+			button.addEventListener(MouseEvent.CLICK, onClick);
+		}
+		
+		private function onClick (e : Event) : void {
 			reference = new FileReference();
 			reference.addEventListener(Event.SELECT, onSelect);
 			reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
@@ -45,7 +60,7 @@ package kalakuh.visualizer
 			var arr : ByteArray = ref["data"];
 			var sound : Sound = new Sound();
 			sound.loadCompressedDataFromByteArray(arr, arr.length);
-			sound.play();
+			channel = sound.play();
 			
 			addEventListener(Event.ENTER_FRAME, update);
 		}
