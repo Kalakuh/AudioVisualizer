@@ -88,9 +88,9 @@ package kalakuh.visualizer
 		}
 		
 		private function onSoundComplete (e : Event) : void {
+			channel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			removeChild(text);
 			np.setText("Press space to load a song");
-			addChild(button);
 		}
 		
 		private function update (e : Event) : void {
