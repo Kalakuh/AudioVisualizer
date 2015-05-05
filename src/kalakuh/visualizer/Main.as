@@ -12,6 +12,8 @@ package kalakuh.visualizer
 	import flash.display.StageDisplayState;
 	import flash.display.Bitmap;
 	import flash.filters.*;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 	
 	/**
 	 * ...
@@ -41,43 +43,34 @@ package kalakuh.visualizer
 			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			
 			addChild(renderer);
-			np = new Text(2.4, "Now playing", 10, true);
-			text = new Text(3, "", 40, true);
-			button = new Sprite();
-			button.x = stage.stageWidth / 2 - 2;
-			button.y = stage.stageHeight / 2 - 1;
-			addChild(button);
+			np = new Text(2, "Press space to load a song", 10, true);
+			addChild(np);
+			text = new Text(2.5, "", 40, true);
 			
-			var bmp : Bitmap = new img();
-			button.addChild(bmp);
-			bmp.x -= bmp.width / 2;
-			bmp.y -= bmp.width / 2;
-			
-			button.filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
-			
-			button.addEventListener(MouseEvent.CLICK, onClick);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		}
 		
-		private function onClick (e : Event) : void {
-			removeEventListener(Event.ENTER_FRAME, update);
-			array = new Array();
-			for (var i : uint = 0; i < 32; i++) {
-				array.push(0);
+		private function onKey (e : KeyboardEvent) : void {
+			if (e.keyCode == Keyboard.SPACE) {
+				removeEventListener(Event.ENTER_FRAME, update);
+				array = new Array();
+				for (var i : uint = 0; i < 32; i++) {
+					array.push(0);
+				}
+				
+				reference = new FileReference();
+				reference.addEventListener(Event.SELECT, onSelect);
+				reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
 			}
-			
-			reference = new FileReference();
-			reference.addEventListener(Event.SELECT, onSelect);
-			reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
 		}
 		
 		private function onSelect (e : Event) : void {
+			np.setText("Now playing");
 			reference.addEventListener(Event.COMPLETE, onComplete);
 			reference.load();
 		}
 		
 		private function onComplete (e : Event) : void {
-			removeChild(button);
-			
 			reference.removeEventListener(Event.COMPLETE, onComplete);
 			reference.removeEventListener(Event.SELECT, onSelect);
 			
@@ -92,13 +85,12 @@ package kalakuh.visualizer
 			
 			renderer.filters = [new BlurFilter(8, 8, 1)];//, new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
 			addChild(text);
-			addChild(np);
 			addEventListener(Event.ENTER_FRAME, update);
 		}
 		
 		private function onSoundComplete (e : Event) : void {
 			removeChild(text);
-			removeChild(np);
+			np.setText("Press space to load a song");
 			addChild(button);
 		}
 		
