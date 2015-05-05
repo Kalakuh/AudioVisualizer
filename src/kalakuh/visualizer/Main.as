@@ -24,6 +24,9 @@ package kalakuh.visualizer
 		private var channel : SoundChannel;
 		[Embed(source = "load.png")]private var img : Class;
 		private var array : Array;
+		private var np : Text;
+		private var text : Text;
+		private var renderer : Sprite = new Sprite();
 		
 		public function Main() 
 		{
@@ -37,6 +40,9 @@ package kalakuh.visualizer
 			// entry point
 			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			
+			addChild(renderer);
+			np = new Text(2.4, "Now playing", 10, true);
+			text = new Text(3, "", 40, true);
 			button = new Sprite();
 			button.x = stage.stageWidth / 2 - 2;
 			button.y = stage.stageHeight / 2 - 1;
@@ -47,7 +53,7 @@ package kalakuh.visualizer
 			bmp.x -= bmp.width / 2;
 			bmp.y -= bmp.width / 2;
 			
-			filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
+			button.filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
 			
 			button.addEventListener(MouseEvent.CLICK, onClick);
 		}
@@ -55,7 +61,7 @@ package kalakuh.visualizer
 		private function onClick (e : Event) : void {
 			removeEventListener(Event.ENTER_FRAME, update);
 			array = new Array();
-			for (var i : uint = 0; i < 512; i++) {
+			for (var i : uint = 0; i < 32; i++) {
 				array.push(0);
 			}
 			
@@ -77,44 +83,50 @@ package kalakuh.visualizer
 			
 			var ref : FileReference = e.target as FileReference;
 			var arr : ByteArray = ref["data"];
+			text.setText(ref.name.substring(0, ref.name.lastIndexOf(".")));
 			var sound : Sound = new Sound();
 			sound.loadCompressedDataFromByteArray(arr, arr.length);
 			if (channel != null) channel.stop();
 			channel = sound.play();
 			channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			
-			filters = [new BlurFilter(8, 8, 2), new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
-			
+			renderer.filters = [new BlurFilter(8, 8, 1)];//, new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
+			addChild(text);
+			addChild(np);
 			addEventListener(Event.ENTER_FRAME, update);
 		}
 		
 		private function onSoundComplete (e : Event) : void {
+			removeChild(text);
+			removeChild(np);
 			addChild(button);
-			filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
 		}
 		
 		private function update (e : Event) : void {
 			var bytes : ByteArray = new ByteArray();
 			SoundMixer.computeSpectrum(bytes);
-			graphics.clear();
+			renderer.graphics.clear();
 			var c : uint = 0xFFFF99;
-			graphics.lineStyle(2, c);
+			renderer.graphics.lineStyle(2, c);
 			
-			for (var x : uint = 0; x < 512; x += 1) {
-				if (x % 3 == 0) {
-					c -= (x < 256 ? 0x030000 : -0x030000);
-				} else if (x % 3 == 1) {
-					c += (x < 256 ? 0x010000 : -0x010000);
-				} else {
-					c += (x < 256 ? 0x010000 : -0x010000);
+			var vals : Array = new Array(32);
+			for (var z : uint = 0; z < 64; z++) {
+				vals[z] = 0;
+				for (var y : uint = 0; y < 8; y++) {
+					vals[z % 32] += bytes.readFloat();
 				}
-				graphics.lineStyle(2, c);
-				var val : Number = bytes.readFloat();
+			}
+			
+			for (var x : uint = 0; x < 32; x += 1) {
+				vals[x] /= 16;
 				array[x] *= 0.95;
-				array[x] += Math.abs(val);
+				array[x] += Math.abs(vals[x]);
+				array[x] = Math.max(array[x], 0.05);
+				c -= (x < 256 ? 0x030000 : -0x030000);
 				
-				graphics.moveTo(stage.stageWidth / 2 + Math.sin((360 * x / 512.0) * Math.PI / 180) * 64, stage.stageHeight / 2 + Math.cos((360 * x / 512.0) * Math.PI / 180) * 64);
-				graphics.lineTo(stage.stageWidth / 2 + Math.sin((360 * x / 512.0) * Math.PI / 180) * (64 + array[x] * 20), stage.stageHeight / 2 + Math.cos((360 * x / 512.0) * Math.PI / 180) * (64 + array[x] * 20));
+				renderer.graphics.beginFill(c);
+				renderer.graphics.drawRect(stage.stageWidth / 2 - 256 + (x + 1) * 16 - 13, stage.stageHeight - 10 - array[x] * 30, 10, array[x] * 30);
+				renderer.graphics.endFill();
 			}
 		}
 	}
