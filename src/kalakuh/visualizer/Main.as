@@ -83,20 +83,32 @@ package kalakuh.visualizer
 			channel = sound.play();
 			channel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			
+			filters = [new BlurFilter(8, 8, 2), new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
+			
 			addEventListener(Event.ENTER_FRAME, update);
 		}
 		
 		private function onSoundComplete (e : Event) : void {
 			addChild(button);
+			filters = [new GlowFilter(0xFFFFFF, 1, 8, 8, 3, 2)];
 		}
 		
 		private function update (e : Event) : void {
 			var bytes : ByteArray = new ByteArray();
 			SoundMixer.computeSpectrum(bytes);
 			graphics.clear();
+			var c : uint = 0xFFFF99;
+			graphics.lineStyle(2, c);
 			
 			for (var x : uint = 0; x < 512; x += 1) {
-				graphics.lineStyle(2, 0xFFFF99);// : 0xFFCC66);
+				if (x % 3 == 0) {
+					c -= (x < 256 ? 0x030000 : -0x030000);
+				} else if (x % 3 == 1) {
+					c += (x < 256 ? 0x010000 : -0x010000);
+				} else {
+					c += (x < 256 ? 0x010000 : -0x010000);
+				}
+				graphics.lineStyle(2, c);
 				var val : Number = bytes.readFloat();
 				array[x] *= 0.95;
 				array[x] += Math.abs(val);
