@@ -52,12 +52,6 @@ package kalakuh.visualizer
 		
 		private function onKey (e : KeyboardEvent) : void {
 			if (e.keyCode == Keyboard.SPACE) {
-				removeEventListener(Event.ENTER_FRAME, update);
-				array = new Array();
-				for (var i : uint = 0; i < 32; i++) {
-					array.push(0);
-				}
-				
 				reference = new FileReference();
 				reference.addEventListener(Event.SELECT, onSelect);
 				reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
@@ -65,6 +59,11 @@ package kalakuh.visualizer
 		}
 		
 		private function onSelect (e : Event) : void {
+			removeEventListener(Event.ENTER_FRAME, update);
+			array = new Array();
+			for (var i : uint = 0; i < 32; i++) {
+				array.push(0);
+			}
 			np.setText("Now playing");
 			reference.addEventListener(Event.COMPLETE, onComplete);
 			reference.load();
