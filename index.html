@@ -38,8 +38,12 @@
     <body>
         <center>
             <h1>Audio Visualizer</h1>
-			<iframe onload="focus()" id="swf" width="532" height="400" src="AudioVisualizer.swf" frameborder="0" margin="10px" allowfullscreen></iframe>
-            <h3 id="footer">Copyright &copy; - 2015 Juha Harviainen ("Kalakuh");</h3>
+			<object>
+			<param name="allowFullScreen" value="true" />
+			<!--<param name="allowFullscreenInteractive" value="true" /> -->
+			<embed onload="focus()" id="swf" width="532" height="400" src="AudioVisualizer.swf" frameborder="0" margin="10px" allowFullScreen="true" />
+            </object>
+			<h3 id="footer">Copyright &copy; - 2015 Juha Harviainen ("Kalakuh");</h3>
         </center>
     </body>
 </html>

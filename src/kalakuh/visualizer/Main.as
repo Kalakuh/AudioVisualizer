@@ -39,8 +39,6 @@ package kalakuh.visualizer
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			// entry point
-			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			
 			addChild(renderer);
 			np = new Text(2, "Press space to load a song", 10, true);
@@ -55,9 +53,9 @@ package kalakuh.visualizer
 				reference = new FileReference();
 				reference.addEventListener(Event.SELECT, onSelect);
 				reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
-			} else if (e.keyCode == Keyboard.ENTER) {
-				if (stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {
-					stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+			} else if (e.keyCode == Keyboard.ENTER || e.keyCode == Keyboard.UP) {
+				if (stage.displayState == StageDisplayState.NORMAL) {
+					stage.displayState = StageDisplayState.FULL_SCREEN;
 				} else {
 					stage.displayState = StageDisplayState.NORMAL;
 				}
