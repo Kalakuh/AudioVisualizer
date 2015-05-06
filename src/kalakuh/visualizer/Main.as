@@ -55,6 +55,12 @@ package kalakuh.visualizer
 				reference = new FileReference();
 				reference.addEventListener(Event.SELECT, onSelect);
 				reference.browse([new FileFilter(".mp3 files", "*.mp3")]);
+			} else if (e.keyCode == Keyboard.ENTER) {
+				if (stage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE) {
+					stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+				} else {
+					stage.displayState = StageDisplayState.NORMAL;
+				}
 			}
 		}
 		
