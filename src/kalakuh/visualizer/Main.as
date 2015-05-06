@@ -43,7 +43,7 @@ package kalakuh.visualizer
 			addChild(renderer);
 			np = new Text(2, "Press space to load a song", 10, true);
 			addChild(np);
-			text = new Text(2.5, "", 40, true);
+			text = new Text(2.4, "", 40, true);
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 		}
@@ -99,25 +99,27 @@ package kalakuh.visualizer
 		
 		private function update (e : Event) : void {
 			var bytes : ByteArray = new ByteArray();
-			SoundMixer.computeSpectrum(bytes);
-			renderer.graphics.clear();
-			var c : uint = 0xFFFF99;
-			renderer.graphics.lineStyle(2, c);
+			SoundMixer.computeSpectrum(bytes, false, 0);
 			
 			var vals : Array = new Array(32);
 			for (var z : uint = 0; z < 64; z++) {
 				vals[z] = 0;
 				for (var y : uint = 0; y < 8; y++) {
-					vals[z % 32] += bytes.readFloat();
+					var val : Number = bytes.readFloat();
+					//if (val > 0) trace(val);
+					vals[z % 32] += val;
 				}
 			}
 			
+			renderer.graphics.clear();
+			var c : uint = 0x6FEA99;
+			renderer.graphics.lineStyle(2, c);
 			for (var x : uint = 0; x < 32; x += 1) {
 				vals[x] /= 16;
 				array[x] *= 0.95;
 				array[x] += Math.abs(vals[x]);
 				array[x] = Math.max(array[x], 0.05);
-				c -= (x < 256 ? 0x030000 : -0x030000);
+				c += 0x030000;
 				
 				renderer.graphics.beginFill(c);
 				renderer.graphics.drawRect(stage.stageWidth / 2 - 256 + (x + 1) * 16 - 13, stage.stageHeight - 10 - array[x] * 30, 10, array[x] * 30);
