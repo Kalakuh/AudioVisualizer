@@ -29,6 +29,7 @@ package kalakuh.visualizer
 		private var np : Text;
 		private var text : Text;
 		private var renderer : Sprite = new Sprite();
+		private var songColor : uint = 0xFFEE88;
 		
 		public function Main() 
 		{
@@ -79,6 +80,19 @@ package kalakuh.visualizer
 			
 			var ref : FileReference = e.target as FileReference;
 			var arr : ByteArray = ref["data"];
+			
+			var color : uint = 0;
+			
+			while (arr.bytesAvailable > 0) {
+				color += Math.abs(arr.readByte());
+			}
+			if (color % 255 < 90) color += 120 - (color % 255);
+			if (color % (255 * 255) < 90 * 255) color += (120 * 255) - (color % (255 * 255));
+			if (color < 90 * 255 * 255) color += (120 * 255 * 255) - color;
+			songColor = color;
+			
+			arr.position = 0;
+			
 			text.setText(ref.name.substring(0, ref.name.lastIndexOf(".")));
 			var sound : Sound = new Sound();
 			sound.loadCompressedDataFromByteArray(arr, arr.length);
@@ -101,7 +115,7 @@ package kalakuh.visualizer
 			var bytes : ByteArray = new ByteArray();
 			SoundMixer.computeSpectrum(bytes, false, 0);
 			
-			var vals : Array = new Array(32);
+			var vals : Array = new Array();
 			for (var z : uint = 0; z < 64; z++) {
 				vals[z] = 0;
 				for (var y : uint = 0; y < 8; y++) {
@@ -112,14 +126,16 @@ package kalakuh.visualizer
 			}
 			
 			renderer.graphics.clear();
-			var c : uint = 0x6FEA99;
+			var c : uint = songColor;
 			renderer.graphics.lineStyle(2, c);
 			for (var x : uint = 0; x < 32; x += 1) {
 				vals[x] /= 16;
 				array[x] *= 0.95;
 				array[x] += Math.abs(vals[x]);
 				array[x] = Math.max(array[x], 0.05);
-				c += 0x030000;
+				c += ((songColor & 0xFF0000) > 0x800000 ? -0x020000 : 0x020000);
+				c += ((songColor & 0x00FF00) > 0x008000 ? -0x000200 : 0x000200);
+				c += ((songColor & 0x0000FF) > 0x000080 ? -0x000002 : 0x000002);
 				
 				renderer.graphics.beginFill(c);
 				renderer.graphics.drawRect(stage.stageWidth / 2 - 256 + (x + 1) * 16 - 13, stage.stageHeight - 10 - array[x] * 30, 10, array[x] * 30);
