@@ -86,9 +86,9 @@ package kalakuh.visualizer
 			while (arr.bytesAvailable > 0) {
 				color += Math.abs(arr.readByte());
 			}
-			if (color % 255 < 90) color += 120 - (color % 255);
-			if (color % (255 * 255) < 90 * 255) color += (120 * 255) - (color % (255 * 255));
-			if (color < 90 * 255 * 255) color += (120 * 255 * 255) - color;
+			if (color % 255 < 150) color += (241 + int(Math.random() * 15)) - (color % 255);
+			else if (color % (255 * 255) < 90 * 255) color += ((241 + int(Math.random() * 15)) * 255) - (color % (255 * 255));
+			else if (color < 90 * 255 * 255) color += ((241 + int(Math.random() * 15)) * 255 * 255) - color;
 			songColor = color;
 			
 			arr.position = 0;
