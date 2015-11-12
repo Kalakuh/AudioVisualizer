@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\AudioVisualizer.swf" />
     <movie fps="60" />
-    <movie width="532" />
-    <movie height="400" />
+    <movie width="1044" />
+    <movie height="550" />
     <movie version="12" />
     <movie minorVersion="0" />
     <movie platform="Flash Player" />

@@ -34,14 +34,14 @@ package kalakuh.visualizer
 			text.setTextFormat(format);
 			
 			text.mouseEnabled = false;
-			text.x = -266;
+			text.x = -522;
 			
-			text.width = 532;
+			text.width = 1044;
 			text.height = 30;
 			
 			this.scaleX = scale;
 			this.scaleY = scale;
-			this.x = 266;
+			this.x = 522;
 			this.y = y;
 			
 			addChild(text);
@@ -53,7 +53,7 @@ package kalakuh.visualizer
 		
 		/**
 		 * Makes text fade in and out slowly using Math.sin function
-		 * @param	e
+		 * @param	e		Duh, an event, enough said...
 		 */
 		private function update (e : Event) : void {
 			i += 3;
