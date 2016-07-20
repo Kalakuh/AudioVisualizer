@@ -15,9 +15,9 @@ Fontstruct is sponsored by FontShop.
 Visit them at http://fontshop.com
 FontShop is the original independent font retailer. We’ve been around since
 the dawn of digital type. Whether you need the right font or need to create the
-right font from scratch, let our 24 years of experience work for you.
+right font from scratch, let our 25 years of experience work for you.
 
-Fontstruct is copyright ©2015 Rob Meek
+Fontstruct is copyright ©2015-2016 Rob Meek
 
 LEGAL NOTICE:
 In using this font you must comply with the licensing terms described in the

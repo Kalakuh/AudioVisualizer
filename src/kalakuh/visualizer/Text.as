@@ -6,7 +6,7 @@ package kalakuh.visualizer
 	
 	/**
 	 * ...
-	 * @author Kalakuh
+	 * @author Juha Harviainen
 	 */
 	public class Text extends Sprite 
 	{
